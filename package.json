@@ -1,0 +1,25 @@
+{
+  "name": "youtube_canva",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon server.js",
+    "client": "npm run dev --prefix frontend",
+    "start": "node server.js",
+    "client-build": "npm run build --prefix frontend",
+    "dev": "concurrently \" npm run server \" \" npm run client \""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
