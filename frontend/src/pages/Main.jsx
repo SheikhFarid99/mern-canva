@@ -232,6 +232,7 @@ const Main = () => {
     }
 
     const add_image = (img) => {
+        setCurrentComponent('')
         const style = {
             id: components.length + 1,
             name: 'image',
