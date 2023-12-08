@@ -9,7 +9,6 @@ import { RxTransparencyGrid } from 'react-icons/rx'
 import TemplateDesign from '../components/main/TemplateDesign'
 import MyImages from '../components/MyImages'
 import Projects from '../components/Projects'
-import Image from '../components/Image'
 import CreateComponente from '../components/CreateComponent'
 import api from '../utils/api'
 import InitialImage from '../components/InitialImage'
@@ -184,7 +183,7 @@ const Main = () => {
 
     const createShape = (name, type) => {
         const style = {
-            id: components.length + 1,
+            id: Date.now(),
             name: name,
             type,
             left: 10,
@@ -205,7 +204,7 @@ const Main = () => {
 
     const add_text = (name, type) => {
         const style = {
-            id: components.length + 1,
+            id: Date.now(),
             name: name,
             type,
             left: 10,
@@ -234,7 +233,7 @@ const Main = () => {
     const add_image = (img) => {
         setCurrentComponent('')
         const style = {
-            id: components.length + 1,
+            id: Date.now(),
             name: 'image',
             type: 'image',
             left: 10,
@@ -429,7 +428,7 @@ const Main = () => {
                                         <input onChange={(e) => setColor(e.target.value)} type="color" className='invisible' id='color' />
                                     </div>
                                     {
-                                        (current_component.name === 'main_frame' && image) && <div>
+                                        (current_component.name === 'main_frame') && <div>
                                             <button className='p-[6px] bg-slate-700 text-white rounded-sm' onClick={remove_background}>Remove background</button>
                                         </div>
                                     }
