@@ -1,8 +1,12 @@
 import React from 'react'
+import TemplateDesign from './main/TemplateDesign'
 
 const Temlates = () => {
+
     return (
-        <div>Temlates</div>
+        <div>
+            <TemplateDesign />
+        </div>
     )
 }
 

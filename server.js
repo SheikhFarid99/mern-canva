@@ -7,10 +7,11 @@ const path = require('path')
 
 
 dotenv.config()
+app.use(express.json())
 
 if (process.env.NODE_ENV === 'local') {
     app.use(cors({
-        origin: 'http://localhost:3000',
+        origin: 'http://localhost:5173',
         credentials: true
     }))
 } else {
@@ -19,11 +20,13 @@ if (process.env.NODE_ENV === 'local') {
     }))
 }
 
+app.use('/api', require('./routes/designRoutes'))
+app.use('/api', require('./routes/authRoutes'))
 
-if(process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname,"./frontend/dist")))
-    app.get('*',(req,res)=>{
-        res.sendFile(path.resolve(__dirname,"./","frontend","dist","index.html"))
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, "./frontend/dist")))
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, "./", "frontend", "dist", "index.html"))
     })
 }
 
@@ -40,6 +43,7 @@ const dbConnect = async () => {
         console.log('database connection failed')
     }
 }
+
 dbConnect()
 
 const PORT = process.env.PORT
