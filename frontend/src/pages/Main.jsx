@@ -428,7 +428,7 @@ const Main = () => {
                                         <input onChange={(e) => setColor(e.target.value)} type="color" className='invisible' id='color' />
                                     </div>
                                     {
-                                        (current_component.name === 'main_frame') && <div>
+                                        (current_component.name === 'main_frame' && current_component.image) && <div>
                                             <button className='p-[6px] bg-slate-700 text-white rounded-sm' onClick={remove_background}>Remove background</button>
                                         </div>
                                     }
