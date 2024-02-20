@@ -59,6 +59,7 @@ const Index = () => {
             window.location.href = '/'
 
         } catch (error) {
+            console.log(error)
             setLoader(false)
             toast.error(error.response.data.message)
         }

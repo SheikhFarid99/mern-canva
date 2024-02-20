@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { useParams } from 'react-router-dom'
 import { BsGrid1X2, BsFillImageFill, BsFolder } from 'react-icons/bs'
-import { FaShapes, FaCloudUploadAlt } from 'react-icons/fa'
+import { FaShapes, FaCloudUploadAlt, FaTrash } from 'react-icons/fa'
+import { IoDuplicateOutline } from "react-icons/io5";
 import { TfiText } from 'react-icons/tfi'
 import { MdKeyboardArrowLeft } from 'react-icons/md'
 import { RxTransparencyGrid } from 'react-icons/rx'
@@ -16,6 +17,7 @@ import BackgroundImages from '../components/BackgroundImages'
 
 const Main = () => {
 
+    const [selectItem, setSelectItem] = useState('')
     const { design_id } = useParams()
     const [state, setState] = useState('')
     const [current_component, setCurrentComponent] = useState('')
@@ -63,13 +65,14 @@ const Main = () => {
     }
 
     const moveElement = (id, currentInfo) => {
-        setCurrentComponent(currentInfo)
 
+        setCurrentComponent(currentInfo)
         let isMoving = true
 
         const currentDiv = document.getElementById(id)
 
         const mouseMove = ({ movementX, movementY }) => {
+            setSelectItem("")
             const getStyle = window.getComputedStyle(currentDiv)
             const left = parseInt(getStyle.left)
             const top = parseInt(getStyle.top)
@@ -80,6 +83,7 @@ const Main = () => {
         }
 
         const mouseUp = (e) => {
+            setSelectItem(currentInfo.id)
             isMoving = false
             window.removeEventListener('mousemove', mouseMove)
             window.removeEventListener('mouseup', mouseUp)
@@ -89,9 +93,13 @@ const Main = () => {
 
         window.addEventListener('mousemove', mouseMove)
         window.addEventListener('mouseup', mouseUp)
+        currentDiv.ondragstart = function () {
+            return false;
+        };
     }
 
     const resizeElement = (id, currentInfo) => {
+
         setCurrentComponent(currentInfo)
 
         let isMoving = true
@@ -118,10 +126,13 @@ const Main = () => {
 
         window.addEventListener('mousemove', mouseMove)
         window.addEventListener('mouseup', mouseUp)
+        currentDiv.ondragstart = function () {
+            return false;
+        };
     }
 
     const rotateElement = (id, currentInfo) => {
-        setCurrentComponent("")
+
         setCurrentComponent(currentInfo)
 
         const target = document.getElementById(id)
@@ -145,6 +156,7 @@ const Main = () => {
 
         }
         const mouseUp = (e) => {
+
             window.removeEventListener('mousemove', mouseMove)
             window.removeEventListener('mouseup', mouseUp)
 
@@ -159,12 +171,21 @@ const Main = () => {
 
         window.addEventListener('mousemove', mouseMove)
         window.addEventListener('mouseup', mouseUp)
+
+        target.ondragstart = function () {
+            return false;
+        };
     }
 
     const removeComponent = (id) => {
         const temp = components.filter(c => c.id !== id)
         setCurrentComponent('')
         setComponents(temp)
+    }
+    const duplicate = (current) => {
+        if (current) {
+            setComponents([...components, { ...current, id: Date.now() }])
+        }
     }
 
     const remove_background = () => {
@@ -182,8 +203,10 @@ const Main = () => {
 
 
     const createShape = (name, type) => {
+        setCurrentComponent('')
+        const id = Date.now()
         const style = {
-            id: Date.now(),
+            id: id,
             name: name,
             type,
             left: 10,
@@ -199,12 +222,16 @@ const Main = () => {
             resizeElement,
             rotateElement
         }
+        setSelectItem(id)
+        setCurrentComponent(style)
         setComponents([...components, style])
     }
 
     const add_text = (name, type) => {
+        setCurrentComponent('')
+        const id = Date.now()
         const style = {
-            id: Date.now(),
+            id: id,
             name: name,
             type,
             left: 10,
@@ -225,6 +252,7 @@ const Main = () => {
 
         setWeight('')
         setFont('')
+        setSelectItem(id)
         setCurrentComponent(style)
         setComponents([...components, style])
 
@@ -232,8 +260,9 @@ const Main = () => {
 
     const add_image = (img) => {
         setCurrentComponent('')
+        const id = Date.now()
         const style = {
-            id: Date.now(),
+            id: id,
             name: 'image',
             type: 'image',
             left: 10,
@@ -251,10 +280,12 @@ const Main = () => {
             rotateElement
         }
 
+        setSelectItem(id)
         setCurrentComponent(style)
         setComponents([...components, style])
 
     }
+
 
     useEffect(() => {
         if (current_component) {
@@ -288,7 +319,7 @@ const Main = () => {
                 components[index].opacity = opacity || current_component.opacity
                 components[index].z_index = zIndex || current_component.z_index
             }
-            setComponents([...temp, components[index]])
+            setComponents([...components])
 
             setColor('')
             setWidth('')
@@ -300,7 +331,7 @@ const Main = () => {
             setzIndex('')
             setText('')
         }
-    }, [color, image, left, top, width, height, opacity, zIndex, padding, font, weight, text, radius])
+    }, [color, image, left, top, width, height, opacity, zIndex, padding, font, weight, text, radius, rotate])
 
 
     useEffect(() => {
@@ -412,17 +443,23 @@ const Main = () => {
                     <div className='w-full flex h-full'>
                         <div className={`flex justify-center relative items-center h-full ${!current_component ? 'w-full' : "w-[calc(100%-250px)] overflow-hidden"}`}>
                             <div className='m-w-[650px] m-h-[480px] flex justify-center items-center overflow-hidden'>
-                                <div id='main_design' className='w-auto relative h-auto overflow-hidden'>
+                                <div id='main_design' className='w-auto relative h-auto overflow-hidden select-none'>
                                     {
-                                        components.map((c, i) => <CreateComponente key={i} info={c} current_component={current_component} removeComponent={removeComponent} />)
+                                        components.map((c, i) => <CreateComponente selectItem={selectItem} setSelectItem={setSelectItem} key={i} info={c} current_component={current_component} removeComponent={removeComponent} />)
                                     }
                                 </div>
                             </div>
                         </div>
                         {
                             current_component && <div className='h-full w-[250px] text-gray-300 bg-[#252627] px-3 py-2'>
-                                <div className='flex gap-6 flex-col items-start h-full px-3 justify-start'>
-                                    <div className='flex gap-4 justify-start items-start mt-4'>
+                                <div className='flex gap-6 flex-col items-start h-full px-3 justify-start pt-4'>
+                                    {
+                                        current_component.name !== 'main_frame' && <div className='flex justify-start items-center gap-5'>
+                                            <div onClick={() => removeComponent(current_component?.id)} className='w-[30px] flex justify-center items-center rounded-md cursor-pointer h-[30px] bg-slate-700 hover:bg-slate-800'><FaTrash /></div>
+                                            <div onClick={() => duplicate(current_component)} className='w-[30px] flex justify-center items-center rounded-md cursor-pointer h-[30px] bg-slate-700 hover:bg-slate-800'><IoDuplicateOutline /></div>
+                                        </div>
+                                    }
+                                    <div className='flex gap-4 justify-start items-start'>
                                         <span>Color : </span>
                                         <label className='w-[30px] h-[30px] cursor-pointer rounded-sm' style={{ background: `${current_component.color && current_component.color !== '#fff' ? current_component.color : 'gray'}` }} htmlFor="color"></label>
                                         <input onChange={(e) => setColor(e.target.value)} type="color" className='invisible' id='color' />

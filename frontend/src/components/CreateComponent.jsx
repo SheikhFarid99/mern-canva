@@ -1,13 +1,15 @@
 import React from 'react'
-import { BsTrash } from 'react-icons/bs'
 import Element from './Element'
-const CreateComponente = ({ info, current_component, removeComponent }) => {
 
-    const randValue = Math.floor(Math.random() * 100)
+const CreateComponente = ({ info, current_component, removeComponent, selectItem, setSelectItem }) => {
+    
     let html = ''
 
     if (info.name === 'main_frame') {
-        html = <div onClick={() => info.setCurrentComponent(info)} className='hover:border-[2px] hover:border-indigo-500 shadow-md' style={{
+        html = <div onClick={() => {
+            info.setCurrentComponent(info)
+            setSelectItem("")
+        }} className='hover:border-[2px] hover:border-indigo-500 shadow-md' style={{
             width: info.width + 'px',
             height: info.height + 'px',
             background: info.color,
@@ -19,38 +21,42 @@ const CreateComponente = ({ info, current_component, removeComponent }) => {
         </div>
     }
     if (info.name === 'shape' && info.type === 'rect') {
-        html = <div id={randValue} onClick={() => info.setCurrentComponent(info)} style={{
-            width: info.width + 'px',
-            height: info.height + 'px',
-            background: info.color,
+        html = <div id={info.id} onClick={() => info.setCurrentComponent(info)} style={{
             opacity: info.opacity,
             left: info.left + 'px',
             top: info.top + 'px',
             zIndex: info.z_index,
             transform: info.rotate ? `rotate(${info.rotate}deg)` : 'rotate(0deg)'
         }}
-            className='absolute group hover:border-[2px] hover:border-indigo-500'
+            className={`absolute group hover:border-[2px] ${info.id === selectItem ? 'border-[2px]' : ''} border-indigo-500`}
         >
-            <Element id={randValue} info={info} exId="" />
             {
-                current_component.id === info.id && <div onClick={() => removeComponent(info.id)} className='px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md'>
-                    <BsTrash />
-                </div>
+                selectItem === info.id && <Element id={info.id} info={info} exId={`${info.id}r`} />
             }
+
+            <div onMouseDown={() => info.moveElement(info.id, info)} id={`${info.id}r`} style={{
+                width: info.width + 'px',
+                height: info.height + 'px',
+                background: info.color,
+            }}>
+
+            </div>
         </div>
     }
 
     if (info.name === 'shape' && info.type === 'circle') {
-        html = <div id={randValue} onClick={() => info.setCurrentComponent(info)} style={{
+        html = <div id={info.id} onClick={() => info.setCurrentComponent(info)} style={{
             left: info.left + 'px',
             top: info.top + 'px',
             zIndex: info.z_index,
             transform: info.rotate ? `rotate(${info.rotate}deg)` : 'rotate(0deg)'
         }}
-            className='absolute group hover:border-[2px] hover:border-indigo-500'
+            className={`absolute group hover:border-[2px] ${info.id === selectItem ? 'border-[2px]' : ''} border-indigo-500`}
         >
-            <Element id={randValue} info={info} exId={`${randValue}c`} />
-            <div id={`${randValue}c`} className='rounded-full' style={{
+            {
+                selectItem === info.id && <Element id={info.id} info={info} exId={`${info.id}c`} />
+            }
+            <div onMouseDown={() => info.moveElement(info.id, info)} id={`${info.id}c`} className='rounded-full' style={{
                 width: info.width + 'px',
                 height: info.width + 'px',
                 background: info.color,
@@ -58,25 +64,23 @@ const CreateComponente = ({ info, current_component, removeComponent }) => {
             }}>
 
             </div>
-            {
-                current_component.id === info.id && <div onClick={() => removeComponent(info.id)} className='px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md'>
-                    <BsTrash />
-                </div>
-            }
         </div>
     }
 
     if (info.name === 'shape' && info.type === 'trangle') {
-        html = <div id={randValue} onClick={() => info.setCurrentComponent(info)} style={{
+        html = <div id={info.id} onClick={() => info.setCurrentComponent(info)} style={{
             left: info.left + 'px',
             top: info.top + 'px',
             zIndex: info.z_index,
             transform: info.rotate ? `rotate(${info.rotate}deg)` : 'rotate(0deg)'
         }}
-            className='absolute group hover:border-[2px] hover:border-indigo-500'
+            className={`absolute group hover:border-[2px] ${info.id === selectItem ? 'border-[2px]' : ''} border-indigo-500`}
         >
-            <Element id={randValue} info={info} exId={`${randValue}t`} />
-            <div id={`${randValue}t`} style={{
+            {
+                selectItem === info.id && <Element id={info.id} info={info} exId={`${info.id}t`} />
+            }
+
+            <div onMouseDown={() => info.moveElement(info.id, info)} id={`${info.id}t`} style={{
                 width: info.width + 'px',
                 height: info.height + 'px',
                 background: info.color,
@@ -85,58 +89,52 @@ const CreateComponente = ({ info, current_component, removeComponent }) => {
             }}>
 
             </div>
-            {
-                current_component.id === info.id && <div onClick={() => removeComponent(info.id)} className='px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md'>
-                    <BsTrash />
-                </div>
-            }
         </div>
     }
     if (info.name === 'text') {
-        html = <div id={randValue} onClick={() => info.setCurrentComponent(info)} style={{
-            left: info.left + 'px',
-            top: info.top + 'px',
-            zIndex: info.z_index,
-            transform: info.rotate ? `rotate(${info.rotate}deg)` : 'rotate(0deg)',
-            padding: info.padding + 'px',
-            color: info.color,
-            opacity: info.opacity,
-        }}
-            className='absolute group hover:border-[2px] hover:border-indigo-500'
-        >
-            <Element id={randValue} info={info} exId="" />
-            <h2 style={{ fontSize: info.font + 'px', fontWeight: info.weight }} className='w-full h-full'>{info.title}</h2>
-            {
-                current_component.id === info.id && <div onClick={() => removeComponent(info.id)} className='px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md'>
-                    <BsTrash />
+        html = <div onClick={() => info.setCurrentComponent(info)} >
+            <div id={info.id} style={{
+                left: info.left + 'px',
+                top: info.top + 'px',
+                zIndex: info.z_index,
+                transform: info.rotate ? `rotate(${info.rotate}deg)` : 'rotate(0deg)',
+                padding: info.padding + 'px',
+                color: info.color,
+                opacity: info.opacity,
+            }}
+                className={`absolute group hover:border-[2px] ${info.id === selectItem ? 'border-[2px]' : ''} border-indigo-500`}
+            >
+                {
+                    selectItem === info.id && <Element id={info.id} info={info} exId="" />
+                }
+                <div onMouseDown={() => info.moveElement(info.id, info)}>
+                    <h2 style={{ fontSize: info.font + 'px', fontWeight: info.weight }} className='w-full h-full'>{info.title}</h2>
                 </div>
-            }
+                
+            </div>
         </div>
     }
 
     if (info.name === 'image') {
-        html = <div id={randValue} onClick={() => info.setCurrentComponent(info)} style={{
+        html = <div id={info.id} onClick={() => info.setCurrentComponent(info)} style={{
             left: info.left + 'px',
             top: info.top + 'px',
             zIndex: info.z_index,
             transform: info.rotate ? `rotate(${info.rotate}deg)` : 'rotate(0deg)',
             opacity: info.opacity,
         }}
-            className='absolute group hover:border-[2px] hover:border-indigo-500'
+            className={`absolute group hover:border-[2px] ${info.id === selectItem ? 'border-[2px]' : ''} border-indigo-500`}
         >
-            <Element id={randValue} info={info} exId={`${randValue}img`} />
-            <div className='overflow-hidden' id={`${randValue}img`} style={{
+            {
+                selectItem === info.id && <Element id={info.id} info={info} exId={`${info.id}img`} />
+            }
+            <div onMouseDown={() => info.moveElement(info.id, info)} className='overflow-hidden' id={`${info.id}img`} style={{
                 width: info.width + 'px',
                 height: info.height + 'px',
                 borderRadius: `${info.radius}%`
             }}>
                 <img className='w-full h-full' src={info.image} alt="image" />
             </div>
-            {
-                current_component.id === info.id && <div onClick={() => removeComponent(info.id)} className='px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md'>
-                    <BsTrash />
-                </div>
-            }
         </div>
     }
 
